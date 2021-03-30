@@ -42,7 +42,7 @@ public class Converter {
             Double val = Double.valueOf(scanner.next());
             if (!buffer.keySet().contains(key)) buffer.put(key, val);
             key = ""+ T +","+ S;
-            if (!buffer.keySet().contains(key)) buffer.put(key, 1/val);
+            if (!buffer.keySet().contains(key) ) buffer.put(key, 1/val);
             units.add(T);
             units.add(S);
         }
@@ -101,6 +101,7 @@ public class Converter {
 
 
     public double getK(String from, String to) throws UnknownUnitsOfMeasurement, NotPossibleToPerformSuchConversion {
+
         String [] fromMass = from.split(" ");
         String [] toMass = to.split(" ");
 
@@ -109,15 +110,19 @@ public class Converter {
         Double den = 1.0;
         int i;
         for (i = 0; i < fromMass.length && !fromMass[i].equals("/"); i++) {
-            hasUnit(fromMass[i]);
-            hasUnit(toMass[i]);
-            if (!fromMass[i].equals(toMass[i])) num *= getCoef(fromMass[i], toMass[i]);
+            if (!fromMass[i].equals("*") && !toMass[i].equals("*")){
+                hasUnit(fromMass[i]);
+                hasUnit(toMass[i]);
+                if (!fromMass[i].equals(toMass[i])) num *= getCoef(fromMass[i], toMass[i]);
+            }
         }
         i++;
         for (; i < fromMass.length; i++) {
-            hasUnit(fromMass[i]);
-            hasUnit(toMass[i]);
-            if (!fromMass[i].equals(toMass[i])) den *= getCoef(fromMass[i], toMass[i]);
+            if (!fromMass[i].equals("*") && !toMass[i].equals("*")) {
+                hasUnit(fromMass[i]);
+                hasUnit(toMass[i]);
+                if (!fromMass[i].equals(toMass[i])) den *= getCoef(fromMass[i], toMass[i]);
+            }
         }
 
         return num/den;
